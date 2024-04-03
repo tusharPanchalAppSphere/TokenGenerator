@@ -32,7 +32,7 @@ public class OAuthService {
     private String redirectUri;
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String CREDENTIALS_FILE_PATH = "/Users/tushar-panchal/Desktop/api/credentials.json"; // Change this path
+    private static final String CREDENTIALS_FILE_PATH = "credentials.json";
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     private AuthorizationCodeFlow flow;
