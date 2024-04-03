@@ -59,8 +59,10 @@ public class OAuthController {
             } else if (os.contains("mac")) {
                 runtime.exec("open " + authorizationUrl);
             } else if (os.contains("nix") || os.contains("nux")) {
-                // Linux or Unix
-                runtime.exec("xdg-open " + authorizationUrl);
+
+                StringBuffer cmd = new StringBuffer();
+                cmd.append(String.format(    "%s \"%s\"", authorizationUrl));
+                runtime.exec(new String[] { "sh", "-c", cmd.toString() });
             } else {
                 System.out.println("Unable to open URL, unsupported operating system.");
             }
