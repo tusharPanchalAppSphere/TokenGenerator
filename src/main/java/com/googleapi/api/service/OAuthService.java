@@ -36,7 +36,7 @@ public class OAuthService {
     private AuthorizationCodeFlow flow;
     private static final String CALLBACK_IP_ADDRESS = "https://tokengenerator-jw7r.onrender.com";
     private static final int CALLBACK_PORT = 8082;
-    private static final String redirectUri2 = "http://" + CALLBACK_IP_ADDRESS  + "/callback";
+    private static final String redirectUri2 =  CALLBACK_IP_ADDRESS  + "/callback";
 
     public OAuthService() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
