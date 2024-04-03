@@ -34,9 +34,9 @@ public class OAuthService {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String CREDENTIALS_FILE_PATH = "credentials.json";
     private AuthorizationCodeFlow flow;
-    private static final String CALLBACK_IP_ADDRESS = "tushar.com";
+    private static final String CALLBACK_IP_ADDRESS = "https://tokengenerator-jw7r.onrender.com";
     private static final int CALLBACK_PORT = 8082;
-    private static final String redirectUri2 = "http://" + CALLBACK_IP_ADDRESS + ":" + CALLBACK_PORT + "/callback";
+    private static final String redirectUri2 = "http://" + CALLBACK_IP_ADDRESS  + "/callback";
 
     public OAuthService() throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
