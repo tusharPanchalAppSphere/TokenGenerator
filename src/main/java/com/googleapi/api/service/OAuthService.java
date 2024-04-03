@@ -33,11 +33,7 @@ public class OAuthService {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String CREDENTIALS_FILE_PATH = "credentials.json";
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
     private AuthorizationCodeFlow flow;
-
-    // Change this IP address and port to your desired values
     private static final String CALLBACK_IP_ADDRESS = "tushar.com";
     private static final int CALLBACK_PORT = 8082;
     private static final String redirectUri2 = "http://" + CALLBACK_IP_ADDRESS + ":" + CALLBACK_PORT + "/callback";
@@ -64,4 +60,6 @@ public class OAuthService {
         Credential credential = flow.createAndStoreCredential(response, null);
         return credential.getAccessToken();
     }
+
+
 }
