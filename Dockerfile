@@ -13,15 +13,6 @@ RUN mvn clean package -DskipTests
 # Use a smaller base image for the final Docker image
 FROM openjdk:17
 
-# Install necessary libraries for Desktop class
-RUN apt-get update && apt-get install -y \
-    libx11-dev \
-    libxext-dev \
-    libxrender-dev \
-    libxtst-dev \
-    libxt-dev \
-    libfontconfig1
-
 # Set the working directory in the container
 WORKDIR /app
 
