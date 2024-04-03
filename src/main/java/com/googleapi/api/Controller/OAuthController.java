@@ -61,7 +61,7 @@ public class OAuthController {
             } else if (os.contains("nix") || os.contains("nux")) {
 
                 StringBuffer cmd = new StringBuffer();
-                cmd.append(String.format(    "%s \"%s\"", authorizationUrl));
+                cmd.append(String.format("%s ", authorizationUrl));
                 runtime.exec(new String[] { "sh", "-c", cmd.toString() });
             } else {
                 System.out.println("Unable to open URL, unsupported operating system.");
