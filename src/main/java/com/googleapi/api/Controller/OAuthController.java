@@ -34,21 +34,38 @@ public class OAuthController {
 //            throw new RuntimeException(e);
 //        }
 
-        if(Desktop.isDesktopSupported()){
-            try {
-                URI uri = new URI(authorizationUrl);
-                Desktop desktop = Desktop.getDesktop();
-                desktop.browse(uri);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+//        if(Desktop.isDesktopSupported()){
+//            try {
+//                URI uri = new URI(authorizationUrl);
+//                Desktop desktop = Desktop.getDesktop();
+//                desktop.browse(uri);
+//            } catch (URISyntaxException e) {
+//                throw new RuntimeException(e);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//
+//        }
+//        else{
+//            System.out.println("fatal error ");
+//        }
+
+        String os = System.getProperty("os.name").toLowerCase();
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            if (os.contains("win")) {
+                runtime.exec("rundll32 url.dll,FileProtocolHandler " + authorizationUrl);
+            } else if (os.contains("mac")) {
+                runtime.exec("open " + authorizationUrl);
+            } else if (os.contains("nix") || os.contains("nux")) {
+                // Linux or Unix
+                runtime.exec("xdg-open " + authorizationUrl);
+            } else {
+                System.out.println("Unable to open URL, unsupported operating system.");
             }
-
-
-        }
-        else{
-            System.out.println("fatal error ");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         //return authorizationUrl;
     }
