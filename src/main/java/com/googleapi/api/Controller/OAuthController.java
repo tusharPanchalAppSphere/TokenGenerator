@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.imageio.event.IIOReadProgressListener;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -27,10 +28,27 @@ public class OAuthController {
         String authorizationUrl = oauthService.getAuthorizationUrl();
         System.out.println("Authorization URL: " + authorizationUrl);
         //return "redirect:" + authorizationUrl;
-        try {
-            response.sendRedirect(authorizationUrl);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+//        try {
+//            response.sendRedirect(authorizationUrl);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        if(Desktop.isDesktopSupported()){
+            try {
+                URI uri = new URI(authorizationUrl);
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(uri);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+        }
+        else{
+            System.out.println("fatal error ");
         }
         //return authorizationUrl;
     }
