@@ -2,8 +2,8 @@
 FROM maven:3.8.1-openjdk-17-slim AS builder
 WORKDIR /app
 COPY . .
-RUN mvn -e -B dependency:resolve
-RUN mvn clean -e -B package
+
+RUN mvn clean package -DskipTests
 
 FROM openjdk:17
 WORKDIR /app
