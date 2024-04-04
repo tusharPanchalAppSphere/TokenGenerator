@@ -1,68 +1,92 @@
-//package com.googleapi.api.Controller;
-//
-//import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-//import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-//import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-//import com.google.api.client.json.JsonFactory;
-//import com.google.api.client.json.jackson2.JacksonFactory;
-//import com.google.api.client.util.store.FileDataStoreFactory;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.http.*;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import org.springframework.web.client.RestTemplate;
-//import java.io.File;
-//
-//
-//
-//
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.util.*;
-//
-//
-//@Controller
-//public class GoogleAuthController {
-//
-//    @Value("${google.client.id}")
-//    private String clientId;
-//
-//    @Value("${google.client.secret}")
-//    private String clientSecret;
-//
-//    @Value("${google.redirect.uri}")
-//    private String redirectUri;
-//
-//    private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
-//    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-//    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-//  private static final List<String> SCOPES = new ArrayList<>();
-//
-//    @GetMapping("/tokens")
-//    public String getAccessToken() {
-//        SCOPES.add("https://www.googleapis.com/auth/spreadsheets");
+package com.googleapi.api.Controller;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Collections;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+
+@RestController
+public class GoogleAuthController {
+
+    private final String clientId = "482980499308-am2g81er3h2almngdjdc2cmi27i7ou0o.apps.googleusercontent.com";
+    private final String clientSecret = "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";
+    private final String redirectUri = "https://tokengenerator-jw7r.onrender.com:8082/driveCallback";
+    private final String authorizationUrl = "https://accounts.google.com/o/oauth2/auth";
+    private final String tokenUrl = "https://oauth2.googleapis.com/token";
+    private final String scope = "https://www.googleapis.com/auth/drive";
+
+
+
+    @GetMapping("/driveTokens")
+    public String getAccessToken() {
+        try {
+            // Load service account credentials JSON file for Google Sheets API
+            InputStream serviceAccountStream = getClass().getResourceAsStream("/credentialsDrive.json");
+            GoogleCredential credential = GoogleCredential.fromStream(serviceAccountStream)
+                    .createScoped(Collections.singleton(scope));
+
+            // Generate access token for Google Sheets API
+            credential.refreshToken();
+            String accessToken = credential.getAccessToken();
+
+            return  accessToken;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed to generate access token for Google Sheets API";
+        }
+    }
+//    @GetMapping("/driveAuthorize")
+//    public ResponseEntity<String> authorize() {
+//        // Redirect user to Google's authorization endpoint
+//        String url = String.format("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=%s",
+//                authorizationUrl, clientId, redirectUri, scope);
+//        return ResponseEntity.status(HttpStatus.FOUND).header("Location", url).build();
+//    }
+
+//    @GetMapping("/driveCallback")
+//    public String handleCallback(@RequestParam("code") String code) {
 //        try {
-//            // Load client secrets
-//            InputStream in = getClass().getResourceAsStream("/credentials.json");
-//            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-//
-//            // Build flow and trigger user authorization request
-//            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-//                    GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, clientSecrets, SCOPES)
-//                    .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-//                    .setAccessType("offline")
+//            HttpClient client = HttpClient.newHttpClient();
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(URI.create(tokenUrl))
+//                    .header("Content-Type", "application/x-www-form-urlencoded")
+//                    .POST(HttpRequest.BodyPublishers.ofString(
+//                            "code=" + code +
+//                                    "&client_id=" + clientId +
+//                                    "&client_secret=" + clientSecret +
+//                                    "&redirect_uri=" + redirectUri +
+//                                    "&grant_type=authorization_code"))
 //                    .build();
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 //
-//            // Exchange authorization code for access token
-//            String accessToken = flow.loadCredential("user_id").getAccessToken();
-//
-//            return "Access Token: " + accessToken;
-//        } catch (Exception e) {
+//            // Handle response to get access token
+//            if (response.statusCode() == HttpStatus.OK.value()) {
+//                JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+//                String accessToken = json.get("access_token").getAsString();
+//                // Store or use the access token as needed
+//                return "Access token: " + accessToken;
+//            } else {
+//                return "Failed to get access token";
+//            }
+//        } catch (IOException | InterruptedException e) {
 //            e.printStackTrace();
-//            return "Failed to generate access token";
+//            return "Error occurred during authorization";
 //        }
 //    }
-//}
+}
+
