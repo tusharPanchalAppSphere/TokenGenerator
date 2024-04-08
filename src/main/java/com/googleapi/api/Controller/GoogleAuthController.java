@@ -1,9 +1,12 @@
 package com.googleapi.api.Controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.googleapi.api.service.TwilioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +33,9 @@ public class GoogleAuthController {
     private final String tokenUrl = "https://oauth2.googleapis.com/token";
     private final String scope = "https://www.googleapis.com/auth/drive";
 
+    @Autowired
+    private TwilioService twilioService;
+
 
 
     @GetMapping("/driveTokens")
@@ -50,43 +56,12 @@ public class GoogleAuthController {
             return "Failed to generate access token for Google Sheets API";
         }
     }
-//    @GetMapping("/driveAuthorize")
-//    public ResponseEntity<String> authorize() {
-//        // Redirect user to Google's authorization endpoint
-//        String url = String.format("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=%s",
-//                authorizationUrl, clientId, redirectUri, scope);
-//        return ResponseEntity.status(HttpStatus.FOUND).header("Location", url).build();
-//    }
 
-//    @GetMapping("/driveCallback")
-//    public String handleCallback(@RequestParam("code") String code) {
-//        try {
-//            HttpClient client = HttpClient.newHttpClient();
-//            HttpRequest request = HttpRequest.newBuilder()
-//                    .uri(URI.create(tokenUrl))
-//                    .header("Content-Type", "application/x-www-form-urlencoded")
-//                    .POST(HttpRequest.BodyPublishers.ofString(
-//                            "code=" + code +
-//                                    "&client_id=" + clientId +
-//                                    "&client_secret=" + clientSecret +
-//                                    "&redirect_uri=" + redirectUri +
-//                                    "&grant_type=authorization_code"))
-//                    .build();
-//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//
-//            // Handle response to get access token
-//            if (response.statusCode() == HttpStatus.OK.value()) {
-//                JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-//                String accessToken = json.get("access_token").getAsString();
-//                // Store or use the access token as needed
-//                return "Access token: " + accessToken;
-//            } else {
-//                return "Failed to get access token";
-//            }
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//            return "Error occurred during authorization";
-//        }
-//    }
+    @GetMapping("/otp")
+    public String getOtp(@RequestParam String number){
+        twilioService.sendOtp(number);
+        System.out.println(number);
+        return "otp sent successfully";
+    }
 }
 
